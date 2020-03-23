@@ -1,0 +1,78 @@
+Reference tutorial:
+(best for mapping): https://howtodoinjava.com/hibernate/hibernate-one-to-many-mapping-using-annotations/
+(general)           https://www.tutorialspoint.com/hibernate/hibernate_or_mappings.htm
+(general)           https://www.javatpoint.com/hibernate-tutorial
+
+For creating a new hibernate project, create a new maven project, select artifact as maven quickstart. Open pom file and add dependencies.
+dependencies-
+    1. mysql connector
+    2. hibernate-core
+For opening mysql-
+1. mysql -u root -p //password is root.
+2. mysql -u gauri -p //password is pwd.
+
+
+Git-
+git init
+git add .
+git commit -m "message"
+git remote add origin https://github.com/gaurirawat/repo-name.git/
+git push -u origin master
+
+to remove. rm -rf .git
+It is important to write @Entity
+                         @Table(name = "pets")  before any bean class otherwise the table will nto be created by hibernate.
+Also after altering the database add the annotation class to configuration statement in sessionUtils.
+classes are dept, emp, project, cabin.
+emp-dept- m:1.
+emp-project- m:n.
+emp-cabin- 1:1.
+emp-pets
+
+Mapping
+All classes should contain default constructors otherwise errors are produced while fetching objects that require background join operations.
+1:1 -C1 contains object of C2 with annotation @OneToOne(targetEntity = C2.class, cascade = CascadeType.ALL) <enter> @JoinColumn(name= "c2_id").
+    Join column specifies the name of the joining column. C2 contains object of C1 with annotation @OneToOne(mappedBy = "var_name").
+    This element specified under mappedBy properties is the variable name of the first class object.
+    The use of mapped by specifies that the first class is the owing entity ie. it contains the foreign key while the second class containing "mappedBy" annotation in the referencing entity.
+    Create objects for both the class and store object of mapped class C2 into owning class C1. Reverse is not required.
+    At the time of inserting objects in the database insertion can happen in any order.
+1:m/m:1 -Can be implemented using set/list or any other persistent classes in java.
+    C1 with cardinality 1 ie the one side contains list/set of objects of class C2 with annotation @OneToMany(cascade=CascadeType.ALL, mappedBy = "employee") private List<C2> c2list;
+    employee is the name of object of class c1 which is present in c2
+    Other class ie the many side contains object of the first class.@ManyToOne <enter> @JoinColumn(name = "c1_id") <enter> private C1 c1;
+    The foreign key of C1 goes into the table of C2 in the column c1_id.
+    At the time of insertion create C1 & C2 objects, put C1 objects inside c2 and list of C2 objects inside c1.
+    Insert c2(owning class//one that contains the foreign key) objects before c1 objects.
+@OneToMany and @ManyToMany associations are defaulted to LAZY loading(fetching is done as and when needed); and @OneToOne and @ManyToOne are defaulted to EAGER loading.
+Session Factory-There is one session factory per database that we are using. Ie. for multiple databases we shall need multiple sessionFactory objects.
+The SessionFactory is a thread safe object and used by all the threads of an application.
+
+Sessions-The Session object is instantiated each time an interaction is needed with the database.
+The session objects should not be kept open for a long time because they are not usually thread safe and they should be created and destroyed as needed.
+Transaction Object, Query Object,Criteria Object
+
+Session functions-
+1. Query createQuery(String queryString): Create a new instance of Query for the given HQL query string.
+2. SQLQuery createSQLQuery(String queryString): Create a new instance of SQLQuery for the given SQL query string.
+3. SessionFactory getSessionFactory(): Get the session factory which created this session.
+4. Serializable save(Object object): Persist the given transient instance, first assigning a generated identifier. It returns the id of the object which needs to be converted into the desired type.
+5. void saveOrUpdate(Object object): Either save(Object) or update(Object) the given instance.
+6. void update(Object object): Update the persistent instance with the identifier of the given detached instance.
+7. void update(String entityName, Object object): Update the persistent instance with the identifier of the given detached instance.
+8. void delete(Object object): Remove a persistent instance from the datastore.
+9. void delete(String entityName, Object object): Remove a persistent instance from the datastore.
+10.Session get(String entityName, Serializable id): Return the persistent instance of the given named entity with the given identifier, or null if there is no such persistent instance.
+
+maven:-Xmx768m
+mvn -U idea:idea  :command to download dependencies from the maven repository
+p
+Annotations:
+@Entity: Used to marks a class as an entity bean.Class must have a no-arg contructor.
+@Table: To specify a table.
+@Id: To specify a primary key.
+@GeneratedValue:Used to define the primary key generation strategy. Eg, we can declare the primary key to be an Auto Increment field.
+@Column: To specify columns.
+@NotBlank: Used to validate that the annotated field is not null or empty.
+@Temporal : Used with java.util.Date and java.util.Calendar classes. It converts the date and time values from Java Object to compatible database type and vice versa.
+@JsonIgnoreProperties annotation is a Jackson annotation. Spring Boot uses Jackson for Serializing and Deserializing Java objects to and from JSON. This annotation is used because we don’t want the clients of the rest api to supply the createdAt and updatedAt values.
